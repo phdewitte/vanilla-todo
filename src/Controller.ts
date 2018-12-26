@@ -10,16 +10,37 @@ export default class Controller {
   constructor(store: Store, view: View) {
     this.store = store;
     this.view = view;
-    this.addItemToList('ham salad'); // temp
-    this.addItemToList('fart salad'); // temp
+
+    this.addItemToList = this.addItemToList.bind(this);
+
+    this.attachAddTodoListener();
   }
 
-  public createItem(text: string): Item {
+  public attachAddTodoListener() {
+    const todoForm = document.getElementById('todo-form');
+    todoForm!.addEventListener('submit', this.addItemToList);
+  }
+
+  // Is this necessary?
+  // public removeAddTodoListener() {
+  //   const todoForm = document.getElementById('todo-form');
+  //   todoForm!.removeEventListener('submit', this.addItemToList);
+  // }
+
+  public createItem(): Item {
+    // 'value' property does not exist on HTMLElement type
+    const inputElement = document.getElementById('todo-input') as HTMLInputElement;
+    const text = inputElement.value;
+
+    inputElement.value = '';
+
     return { text, id: String(Date.now()), checked: false };
   }
 
-  public addItemToList(text: string) {
-    const newItem = this.createItem(text);
+  public addItemToList(event: Event) {
+    event.preventDefault();
+
+    const newItem = this.createItem();
     this.store.upsertItem(newItem);
     this.view.appendItem(newItem);
   }
