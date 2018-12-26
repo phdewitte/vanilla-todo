@@ -12,20 +12,33 @@ export default class Controller {
     this.view = view;
 
     this.addItemToList = this.addItemToList.bind(this);
+    this.toggleItemChecked = this.toggleItemChecked.bind(this);
 
     this.attachAddTodoListener();
+    this.attachToggleCheckedListener();
   }
 
   public attachAddTodoListener() {
-    const todoForm = document.getElementById('todo-form');
-    todoForm!.addEventListener('submit', this.addItemToList);
+    const form = document.getElementById('todo-form');
+    form!.addEventListener('submit', this.addItemToList);
   }
 
-  // Is this necessary?
-  // public removeAddTodoListener() {
-  //   const todoForm = document.getElementById('todo-form');
-  //   todoForm!.removeEventListener('submit', this.addItemToList);
-  // }
+  public attachToggleCheckedListener() {
+    const list = document.getElementById('todo-list');
+    list!.addEventListener('click', this.toggleItemChecked);
+  }
+
+  public toggleItemChecked(event: Event) {
+    // event.target is not always an element;
+    const { nodeName, id } = event.target as HTMLElement;
+
+    if (nodeName !== 'INPUT') {
+      return;
+    }
+
+    const item = this.store.todos[id];
+    this.store.upsertItem({ ...item, checked: !item.checked });
+  }
 
   public createItem(): Item {
     // 'value' property does not exist on HTMLElement type

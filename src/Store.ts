@@ -1,7 +1,8 @@
+import Dictionary from '../definitions/Dictionary';
 import Item from '../definitions/Item';
 
 export default class Store {
-  public todos = {};
+  public todos: Dictionary<Item> = {};
 
   public upsertItem(item: Item) {
     this.todos = {

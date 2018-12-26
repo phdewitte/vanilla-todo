@@ -4,12 +4,15 @@ export default class View {
   public list: HTMLElement | null;
 
   constructor() {
-    this.list = document.getElementById('list');
+    this.list = document.getElementById('todo-list');
   }
 
   public createListEntry(item: Item) {
     const li = document.createElement('li');
-    const markup = `<label><input type="checkbox">${item.text}</label>`;
+    const checkedString = item.checked ? 'checked' : '';
+    // Research wrapped label-wrapped inputs and accessibility benefits
+    const markup =
+      `<input id=${item.id} type="checkbox" ${checkedString}><label for=${item.id}>${item.text}</label>`;
     li.innerHTML = markup;
     return li;
   }
