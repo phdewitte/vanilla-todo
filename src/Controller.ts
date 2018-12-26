@@ -12,10 +12,10 @@ export default class Controller {
     this.view = view;
 
     this.addItemToList = this.addItemToList.bind(this);
-    this.toggleItemChecked = this.toggleItemChecked.bind(this);
+    this.handleListItemClick = this.handleListItemClick.bind(this);
 
     this.attachAddTodoListener();
-    this.attachToggleCheckedListener();
+    this.attachItemClickListener();
   }
 
   public attachAddTodoListener() {
@@ -23,25 +23,26 @@ export default class Controller {
     form!.addEventListener('submit', this.addItemToList);
   }
 
-  public attachToggleCheckedListener() {
+  public attachItemClickListener() {
     const list = document.getElementById('todo-list');
-    list!.addEventListener('click', this.toggleItemChecked);
+    list!.addEventListener('click', this.handleListItemClick);
   }
 
-  public toggleItemChecked(event: Event) {
-    // event.target is not always an element;
-    const { nodeName, id } = event.target as HTMLElement;
+  public handleListItemClick(event: Event) {
+    const { id, nodeName } = event.target as HTMLElement;
 
-    if (nodeName !== 'INPUT') {
-      return;
+    if (nodeName === 'INPUT') {
+      const item = this.store.todos[id];
+      const updatedItem = { ...item, checked: !item.checked };
+      this.editItem(updatedItem);
+    } else if (nodeName === 'BUTTON') {
+      const { value } = event.target as HTMLButtonElement;
+      const item = this.store.todos[value];
+      this.deleteItem(item);
     }
-
-    const item = this.store.todos[id];
-    this.store.upsertItem({ ...item, checked: !item.checked });
   }
 
   public createItem(): Item {
-    // 'value' property does not exist on HTMLElement type
     const inputElement = document.getElementById('todo-input') as HTMLInputElement;
     const text = inputElement.value;
 
@@ -50,11 +51,21 @@ export default class Controller {
     return { text, id: String(Date.now()), checked: false };
   }
 
-  public addItemToList(event: Event) {
+  public addItemToList(event: Event): void {
     event.preventDefault();
 
     const newItem = this.createItem();
     this.store.upsertItem(newItem);
     this.view.appendItem(newItem);
+  }
+
+  public editItem(item: Item): void {
+    this.store.upsertItem(item);
+    // TODO: View is currently 'uncontrolled'. Add view update
+  }
+
+  public deleteItem(item: Item): void {
+    this.store.deleteItemById(item.id);
+    this.view.removeItem(item);
   }
 }

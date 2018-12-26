@@ -7,7 +7,13 @@ export default class Store {
   public upsertItem(item: Item) {
     this.todos = {
       ...this.todos,
-      [item.id]: item, // Spread item?
+      [item.id]: item,
     };
+  }
+
+  public deleteItemById(id: string) {
+    const workingTodos = { ...this.todos };
+    delete workingTodos[id];
+    this.todos = workingTodos;
   }
 }
