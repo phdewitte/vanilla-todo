@@ -6,8 +6,18 @@
   <title>Vanilla TS Todo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- <link rel="stylesheet" type="text/css" media="screen" href="index.css" /> -->
+  <!-- <script src="dist/bundle.js"></script> -->
 </head>
 <body>
   <h1>Vanilla TS Todo</h1>
+  <ul id="todo-list"></ul>
+  <form id="todo-form">
+    <label for="todo-input">
+      <span>Add Todo Item</span>
+      <!-- TODO: Add some fancy validation -->
+      <input id="todo-input" type="text" required /> 
+    </label>
+    <button type="submit">Add Todo</button>
+  </form>
 </body>
 </html>
